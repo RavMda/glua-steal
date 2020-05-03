@@ -64,7 +64,7 @@ This file is executed in a separate environment, not in \_G. You are still able 
 
 This file will be executed every time a Garry's Mod Lua script is about to be executed. You can return false to stop the current file (gluasteal.SCRIPT) from being executed.
 
-You can also return second bool to prevent gluasteal from saving file.
+You can also return a second bool to prevent gluasteal from saving the file.
 
 ```lua
 -- All scripts with the string 'derma' in their name will be blocked from executing
@@ -74,8 +74,7 @@ end
 ```
 ```lua
 -- gluasteal.include example
--- it will run "hook/newhook.lua" from your gluasteal folder, but gmod will see fake path -> "lua/includes/modules/hook.lua"
-
+-- runs "hook/newhook.lua" from your gluasteal folder, but gmod sees its path as "lua/includes/modules/hook.lua"
 gluasteal.include('hook/newhook.lua', 'lua/includes/modules/hook.lua')
 ```
 ```
@@ -91,7 +90,7 @@ Note: gluasteal.SCRIPT and gluasteal.SOURCE will be an empty string in files inc
 
 ### RunOnClient (Run clientside lua from menu)
 
-You can use function RunOnClient in menu state to run clientside scripts.
+You can use RunOnClient function in menu state to run clientside code.
 Scripts runned with this method are also supplied with gluasteal table.
 ```lua
 RunOnClient([[print('hello world!')]])
