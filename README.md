@@ -74,9 +74,9 @@ end
 ```
 ```lua
 -- gluasteal.include example
--- it will run "hook/newhook.lua" from your gluasteal folder, but gmod will see it's path as "lua/includes/modules/hook.lua"
-local file_name, fake_file_name = 'hook/newhook.lua', 'lua/includes/modules/hook.lua'
-gluasteal.include(file_name, fake_file_name)
+-- it will run "hook/newhook.lua" from your gluasteal folder, but gmod will see fake path -> "lua/includes/modules/hook.lua"
+
+gluasteal.include('hook/newhook.lua', 'lua/includes/modules/hook.lua')
 ```
 ```
 gluasteal.SCRIPT -- The path of the Garry's Mod Lua script that is about to be executed (e.g. "init.lua")
@@ -92,6 +92,7 @@ Note: gluasteal.SCRIPT and gluasteal.SOURCE will be an empty string in files inc
 ### RunOnClient (Run clientside lua from menu)
 
 You can use function RunOnClient in menu state to run clientside scripts.
+Scripts runned with this method are also supplied with gluasteal table.
 ```lua
 RunOnClient([[print('hello world!')]])
 ```
