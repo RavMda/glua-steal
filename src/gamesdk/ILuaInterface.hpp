@@ -32,6 +32,7 @@ namespace glt::ssdk {
 	};
 
 	extern ILuaInterface* g_clientluainterface;
+	extern ILuaInterface* g_menuluainterface;
 }
 
 #endif

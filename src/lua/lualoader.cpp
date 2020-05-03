@@ -18,10 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 static int include(lua_State*) {
 	glt::ssdk::ILuaInterface* lua = glt::ssdk::g_clientluainterface;
-	const char* filename = lua->CheckString(-1);
+	const char* filename = lua->CheckString(1);
+	const char* fake_filename = lua->IsType(2, GarrysMod::Lua::Type::STRING) ? lua->GetString(2) : filename;
 
 	try {
-		glt::lua::RunLua(lua, filename, glt::lua::GetLuaFileContents(filename));
+		glt::lua::RunLua(lua, fake_filename, glt::lua::GetLuaFileContents(filename));
 	}
 	catch (const std::exception& ex) {
 		glt::GetLogger()->warn("Failed to include {}\t{}", filename, ex.what());
@@ -48,25 +49,28 @@ void glt::lua::RunLua(ssdk::ILuaInterface* lua, const std::string& identifier, c
 	}
 }
 
-bool glt::lua::LoadLua(ssdk::ILuaInterface* lua, const std::string& filename, const std::string& code) {
+std::pair<bool, bool> glt::lua::LoadLua(ssdk::ILuaInterface* lua, const std::string& filename, const std::string& code) {
 	try {
 		RunLua(lua, "gluasteal.lua", GetLuaFileContents(), filename, code);
 	}
 	catch (const std::filesystem::filesystem_error&) { // gluasteal.lua doesn't exist, supress.
-		return true;
+		return std::make_pair(true, true);
 	}
 
+	bool shouldloadfile = true;
+	bool shouldsavefile = true;
+
 	if (lua->IsType(-1, GarrysMod::Lua::Type::BOOL)) {
-		bool shouldloadfile = lua->GetBool(-1);
+		shouldloadfile = lua->GetBool(-1);
+	}
 
-		lua->Pop(1);
-
-		return shouldloadfile;
+	if (lua->IsType(0, GarrysMod::Lua::Type::BOOL)) {
+		shouldsavefile = lua->GetBool(0);
 	}
 
 	lua->Pop(1);
 
-	return true;
+	return std::make_pair(shouldloadfile, shouldsavefile);
 }
 
 std::string glt::lua::GetLuaFileContents(const std::string& path) {
@@ -96,4 +100,43 @@ void glt::lua::CreateEnvironment(ssdk::ILuaInterface* lua, const std::string& fi
 	lua->SetMetaTable(-2);
 
 	lua_setfenv(lua->GetLuaState(), -2);
+}
+
+void print(const char* str)
+{
+	glt::ssdk::ILuaInterface* menu = glt::ssdk::g_menuluainterface;
+
+	menu->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+	menu->GetField(-1, "print");
+	menu->PushString(str);
+	menu->Call(1, 0);
+	menu->Pop();
+}
+
+static int RunOnClient(lua_State*) {
+	glt::ssdk::ILuaInterface* lua = glt::ssdk::g_menuluainterface;
+	glt::ssdk::ILuaInterface* client = glt::ssdk::g_clientluainterface;
+
+	if (!lua || !client) {
+		return 0;
+	}
+
+	std::string code = std::string(lua->CheckString(1));
+
+	try {
+		glt::lua::RunLua(client, "lua/includes/init.lua", code);
+		client->Pop(1);
+	}
+	catch (const std::exception& ex){
+		print(ex.what());
+	}
+
+	return 0;
+}
+
+void glt::lua::MenuInit(ssdk::ILuaInterface* menu) {
+	menu->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+	menu->PushCFunction(RunOnClient);
+	menu->SetField(-2, "RunOnClient");
+	menu->Pop();
 }

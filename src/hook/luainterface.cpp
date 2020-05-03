@@ -34,10 +34,15 @@ static bool __FASTCALL__ RunStringExHk(glt::ssdk::ILuaInterface* thisptr, std::u
 #endif
 	const char* filename, const char* path, const char* buf, bool b1, bool b2, bool b3, bool b4) {
 
-	glt::lua::DumpLua(filename, buf);
-
 	try {
-		if (!glt::lua::LoadLua(thisptr, filename, buf)) {
+
+		std::pair p = glt::lua::LoadLua(thisptr, filename, buf);
+
+		if (std::get<1>(p)) {
+			glt::lua::DumpLua(filename, buf);
+		}
+
+		if (!std::get<0>(p)) {
 			glt::GetLogger()->info("Blocked the execution of {}", filename);
 
 			return false;

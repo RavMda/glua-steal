@@ -42,7 +42,9 @@ void glt::Init() {
 
 		ssdk::g_engineclient = libengine.GetInterface<ssdk::IVEngineClient>("VEngineClient015");
 		ssdk::g_luashared = libluashared.GetInterface<ssdk::ILuaShared>("LUASHARED003");
+		ssdk::g_menuluainterface = ssdk::g_luashared->GetLuaInterface(2);
 
+		lua::MenuInit(ssdk::g_menuluainterface);
 		lua::GetExports();
 
 		luasharedhooker.Hook();

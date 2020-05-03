@@ -17,3 +17,4 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 #include "ILuaInterface.hpp"
 
 glt::ssdk::ILuaInterface* glt::ssdk::g_clientluainterface = nullptr;
+glt::ssdk::ILuaInterface* glt::ssdk::g_menuluainterface = nullptr;
