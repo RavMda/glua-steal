@@ -11,7 +11,7 @@ Tested & working on Windows & Linux. Still needs testing on Mac.
 
 ### How to Use
 
-1. Either Download pre-built from the [Releases section](https://github.com/lewez/glua-steal/releases) or [build from source](#Building-From-Source).
+1. Either Download pre-built from the [Releases section](https://github.com/RavMda/glua-steal/releases) or [build from source](#Building-From-Source).
 2. [Inject](#How-to-Inject) library into Garry's Mod, at the main menu.
 3. Optionally, set up your [Lua file to be loaded](#lua-loader-load-before-autorun).
 4. Join a server.
@@ -108,19 +108,19 @@ If building with GCC, ensure you are using at least version 8 or above.
 Using the Visual Studio Developer Command Prompt (requires VS build tools)
 
 ```
-git clone https://github.com/lewez/glua-steal
+git clone https://github.com/RavMda/glua-steal
 cd glua-steal
 git submodule update --init --recursive
 mkdir build
 cd build
 cmake --help	Find a suitable generator, such as "Visual Studio 15 2017"
-cmake -G <GENERATOR> ..
+cmake -G <GENERATOR> .. 	For example cmake -G "Visual Studio 16 2019" .. -A Win32
 msbuild gluasteal.sln /p:Configuration=Release
 ```
 
 ##### Unix
 ```
-git clone https://github.com/lewez/glua-steal
+git clone https://github.com/RavMda/glua-steal
 cd glua-steal
 git submodule update --init --recursive
 mkdir build && cd build
