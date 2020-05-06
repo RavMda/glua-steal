@@ -113,7 +113,7 @@ git submodule update --init --recursive
 mkdir build
 cd build
 cmake --help	Find a suitable generator, such as "Visual Studio 15 2017"
-cmake -G <GENERATOR> .. 	For example cmake -G "Visual Studio 16 2019" .. -A Win32
+cmake -A Win32 -G <GENERATOR> ..
 msbuild gluasteal.sln /p:Configuration=Release
 ```
 

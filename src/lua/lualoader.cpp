@@ -102,17 +102,6 @@ void glt::lua::CreateEnvironment(ssdk::ILuaInterface* lua, const std::string& fi
 	lua_setfenv(lua->GetLuaState(), -2);
 }
 
-void print(const char* str)
-{
-	glt::ssdk::ILuaInterface* menu = glt::ssdk::g_menuluainterface;
-
-	menu->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
-	menu->GetField(-1, "print");
-	menu->PushString(str);
-	menu->Call(1, 0);
-	menu->Pop();
-}
-
 static int RunOnClient(lua_State*) {
 	glt::ssdk::ILuaInterface* lua = glt::ssdk::g_menuluainterface;
 	glt::ssdk::ILuaInterface* client = glt::ssdk::g_clientluainterface;
@@ -128,7 +117,11 @@ static int RunOnClient(lua_State*) {
 		client->Pop(1);
 	}
 	catch (const std::exception& ex){
-		print(ex.what());
+		lua->PushSpecial(GarrysMod::Lua::SPECIAL_GLOB);
+		lua->GetField(-1, "print");
+		lua->PushString(ex.what());
+		lua->Call(1, 0);
+		lua->Pop();
 	}
 
 	return 0;
