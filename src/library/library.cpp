@@ -16,19 +16,60 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>. */
 
 #include "library.hpp"
 
+#if (defined(OS_LINUX) || defined(OS_MAC))
+	struct library_entry {
+		const char* name;
+		void* lib;
+	};
+
+	int phdr_callback(struct dl_phdr_info* info, size_t, void* data) {
+		library_entry* entry = reinterpret_cast<library_entry*>(data);
+
+		if (strstr(info->dlpi_name, entry->name) != nullptr) {
+			entry->lib = dlopen(info->dlpi_name, RTLD_NOLOAD);
+			return 1;
+		}
+
+		return 0;
+	}
+#endif
+
 glt::lib::Library::Library(const std::string& pathname) :
 	m_pathname(pathname) {
 
 	std::string pathnamext(pathname + GetExtension());
 
 #if (defined(OS_LINUX) || defined(OS_MAC))
-	m_handle = reinterpret_cast<std::uintptr_t*>(dlopen(pathnamext.c_str(), RTLD_NOLOAD));
+	library_entry entry;
+	entry.name = pathnamext.c_str();
+	entry.lib = nullptr;
+
+	dl_iterate_phdr(phdr_callback, (void*)&entry);
+
+	m_handle = reinterpret_cast<std::uintptr_t*>(entry.lib);
 #elif (defined(OS_WINDOWS))
-	m_handle = reinterpret_cast<std::uintptr_t*>(GetModuleHandle(pathnamext.c_str()));
+	MODULEENTRY32 module_entry;
+	HANDLE module_snap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
+	module_entry.dwSize = sizeof(MODULEENTRY32);
+	
+	if (!Module32First(module_snap, &module_entry)) {
+		throw std::runtime_error("failed to get process modules");
+	}
+
+	do {
+		std::string module_name = module_entry.szModule;
+		std::size_t found = module_name.find(pathnamext);
+
+		if (found != std::string::npos) {
+			m_handle = reinterpret_cast<std::uintptr_t*>(module_entry.hModule);
+			break;
+		}
+
+	} while (Module32Next(module_snap, &module_entry));
 #endif
 
 	if (!m_handle) {
-		throw std::runtime_error("failed to grab handle for library " + pathname);
+		throw std::runtime_error("failed to grab handle for library " + pathnamext);
 	}
 }
 
