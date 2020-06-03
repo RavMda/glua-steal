@@ -1,5 +1,7 @@
 ## A cross-platform Garry's Mod tool to download a server's Lua files
 
+### Please note that Linux 64-bit is not currently working.
+
 gluasteal downloads clientside & shared Lua files from Garry's Mod servers that you join. gluasteal also allows you to run your own Lua code on any server.
 
 ![Windows usage](https://i.imgur.com/j38AKQ7.png)
@@ -113,7 +115,8 @@ git submodule update --init --recursive
 mkdir build
 cd build
 cmake --help	Find a suitable generator, such as "Visual Studio 15 2017"
-cmake -A Win32 -G <GENERATOR> ..
+Select either Win32 or x64 below for the -A flag (32bit or 64bit)
+cmake .. -A Win32/x64 -G <GENERATOR> -DCMAKE_TOOLCHAIN_FILE=../toolchains/msvc.cmake 
 msbuild gluasteal.sln /p:Configuration=Release
 ```
 
@@ -123,7 +126,8 @@ git clone https://github.com/RavMda/glua-steal
 cd glua-steal
 git submodule update --init --recursive
 mkdir build && cd build
-cmake ..
+choose the 32bit or 64bit toolchain below (toolchains are in toolchains/ folder)
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchains/gcc-<32bit/64bit>.cmake
 make
 ```
 

@@ -27,7 +27,7 @@ namespace glt::ssdk {
 	class ILuaInterface : public GarrysMod::Lua::ILuaBase {
 		public:
 		lua_State* GetLuaState() {
-			return *reinterpret_cast<lua_State**>(reinterpret_cast<std::uint8_t*>(this) + 0x4);
+			return *reinterpret_cast<lua_State**>(this + 1);
 		}
 	};
 
