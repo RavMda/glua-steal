@@ -1,13 +1,11 @@
-## A cross-platform Garry's Mod tool to download a server's Lua files
+## A cross-platform Garry's Mod tool that retrieves client-side Lua files from servers
 
-### Please note that Linux 64-bit is not currently working.
-
-gluasteal downloads clientside & shared Lua files from Garry's Mod servers that you join. gluasteal also allows you to run your own Lua code on any server.
+gluasteal retrieves client-side & shared Lua files from Garry's Mod servers that you join. gluasteal also allows you to execute your own Lua code.
 
 ![Windows usage](https://i.imgur.com/j38AKQ7.png)
 ![Linux usage](https://i.imgur.com/N7reRXS.png)
 
-Tested & working on Windows & Linux. Still needs testing on Mac.
+Works on Windows & Linux (32-bit & 64-bit). Still needs testing on macOS.
 
 ---
 
